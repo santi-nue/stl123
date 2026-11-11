@@ -80,7 +80,7 @@ jobs:
       - name: Rename APK
         run: |
           cp \
-            app/build/outputs/apk/debug/app-debug.apk \
+            app/build/outputs/apk/debug/video2midi-1.0.3.apk \
             app/build/outputs/apk/debug/vid2midiApp-debug.apk
 
       - name: Upload APK artifact
