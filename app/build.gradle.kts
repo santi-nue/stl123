@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.video2midi"
-    compileSdk = project.findProperty("GLOBAL_SDK_VERSION")?.toString()?.toInt() ?: 35
+    compileSdk = 35
 
     applicationVariants.all {
         outputs.all {
@@ -15,8 +15,8 @@ android {
     }
     defaultConfig {
         applicationId = "com.video2midi"
-        minSdk = project.findProperty("GLOBAL_MIN_SDK_VERSION")?.toString()?.toInt() ?: 29
-        targetSdk = project.findProperty("GLOBAL_TARGET_SDK_VERSION")?.toString()?.toInt() ?: 34
+        minSdk = 28
+        targetSdk = 35
         versionCode = 2
         versionName = "1.0.3"
 
