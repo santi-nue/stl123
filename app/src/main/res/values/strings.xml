@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Video2MIDI</string>
+    <string name="app_icon">App Icon</string>
+    <string name="app_description">Convert piano roll video to MIDI file</string>
+    
+    <!-- Main Activity -->
+    <string name="no_video_selected">No video selected</string>
+    <string name="select_video">Select Video</string>
+    <string name="preview">Preview</string>
+    <string name="settings">Settings</string>
+    <string name="color_map">Color Map</string>
+    <string name="start_conversion">Start Conversion</string>
+    
+    <!-- Settings Activity -->
+    <string name="settings_title">Settings</string>
+    <string name="midi_settings">MIDI Settings</string>
+    <string name="key_positions">Key Positions</string>
+    <string name="options">Options</string>
+    
+    <string name="octave">Octave: %d</string>
+    <string name="tempo">Tempo: %d</string>
+    <string name="sensitivity">Sensitivity: %d</string>
+    <string name="min_duration">Min Duration: %.2f sec</string>
+    <string name="white_key_width">White Key Width: %d</string>
+    <string name="black_key_position">Black Key Position: %.2f</string>
+    <string name="keys_count">Keys Count: %d</string>
+    
+    <string name="notes_overlap">Notes Overlap</string>
+    <string name="ignore_min_duration">Ignore Notes with Min Duration</string>
+    <string name="use_sparks">Use Sparks Detection</string>
+    <string name="use_alternate_keys">Use Alternate Keys</string>
+    <string name="rollcheck">Rollcheck (Priority on neighboring keys)</string>
+    <string name="rollcheck_priority">Rollcheck White Keys Priority</string>
+    <string name="use_per_color_delta">Use Per-Color Sensitivity</string>
+    <string name="sync_notes_start">Sync Notes Start Position</string>
+    
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="reset">Reset to Defaults</string>
+    
+    <!-- Preview Activity -->
+    <string name="frame_info">Frame: 0 / 0</string>
+    <string name="video_preview">Video Preview</string>
+    <string name="prev_frame">Previous</string>
+    <string name="next_frame">Next</string>
+    <string name="close">Close</string>
+    
+    <!-- Color Map Activity -->
+    <string name="color_map_title">Color Map</string>
+    <string name="color_map_description">Configure colors for key detection and MIDI channels</string>
+    <string name="add_color">Add Color</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Disable</string>
+    
+    <!-- Common -->
+    <string name="ok">OK</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <!-- Settings Explanations (English) -->
+    <string name="desc_octave">Adjusts the musical octave pitch offset of the output MIDI file (default is 3).</string>
+    <string name="desc_tempo">Sets the standard playback speed (Beats Per Minute) for the generated MIDI.</string>
+    <string name="desc_sensitivity">How sensitive the detector is to color changes. Higher value = easier detection but more noise. Recommended: 80-95.</string>
+    <string name="desc_min_duration">Note events shorter than this will be ignored or forced to this length to avoid key flicker. Recommended: 0.02s for 60fps.</string>
+    <string name="desc_white_key_width">Adjust the pixel width of virtual piano keys to fit your video’s keyboard size.</string>
+    <string name="desc_black_key_position">Adjust the relative horizontal offset alignment for virtual black keys.</string>
+    <string name="desc_keys_count">Specify the total number of piano keys visible in the video (usually 88 keys).</string>
+    <string name="desc_notes_overlap">Allows simultaneous overlapping notes of the same pitch. Keep disabled for cleaner MIDI.</string>
+    <string name="desc_ignore_min_duration">Enable to completely skip/ignore short noise clicks that are shorter than the Min Duration setting.</string>
+    <string name="desc_use_sparks">Enable if your video has glowing sparks rising above the keyboard to help improve note hit precision.</string>
+    <string name="desc_use_alternate_keys">Experimental: Use alternative key mapping algorithms for non-standard Synthesia themes.</string>
+    <string name="desc_rollcheck">Analyzes neighboring keys to filter out false-positive duplicate triggers when lights bleed across keys.</string>
+    <string name="desc_rollcheck_priority">Prioritize white key state changes when processing rollchecks.</string>
+    <string name="desc_use_per_color_delta">Use individual color sensitivity variables from the Color Map list instead of a global value.</string>
+    <string name="desc_sync_notes_start">Auto-align starting times of notes played very close to each other (helps align chord keystrokes).</string>
+    <string name="language_select">Language / ภาษา</string>
+    <string name="desc_language">Select application interface language (เลือกภาษาแสดงผลของแอป)</string>
+    <string name="recomendations">Recommendation\n• For best results, use 1080p 60fps or 120fps videos.\n• 30fps videos may cause notes to merge (stick together) due to low frame rate.\n• You can download 60fps/120fps videos using YTDLnis: https://github.com/deniscerri/ytdlnis\n\n</string>
+
+    <!-- Convertation speed -->
+    <string name="conv_speed_title">Choose Conversion Speed</string>
+    <string name="conv_speed_high">High Precision (Slow, process 100% of frames)</string>
+    <string name="conv_speed_normal">Normal Speed (2x Faster, process every 2nd frame)</string>
+    <string name="conv_speed_fast">Fast (3x Faster, process every 3rd frame)</string>
+    <string name="conv_speed_superfast">Super Fast (4x Faster, process every 4th frame)</string>
+
+    
+</resources>

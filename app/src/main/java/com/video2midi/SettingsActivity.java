@@ -1,0 +1,361 @@
+package com.video2midi;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.SeekBar;
+import android.widget.TextView;
+
+import com.video2midi.core.KeyPositionCalculator;
+import com.video2midi.model.Preferences;
+
+public class SettingsActivity extends AppCompatActivity {
+    private static final String TAG = "SettingsActivity";
+    
+    private Preferences preferences;
+    private android.widget.Spinner spinnerLanguage;
+    
+    @Override
+    protected void attachBaseContext(android.content.Context newBase) {
+        com.video2midi.model.Preferences preferences = new com.video2midi.model.Preferences();
+        preferences.load(newBase);
+        super.attachBaseContext(com.video2midi.utils.LocaleHelper.wrapContext(newBase, preferences.getLanguage()));
+    }
+    
+    // UI элементы
+    private SeekBar seekOctave;
+    private TextView tvOctave;
+    
+    private SeekBar seekTempo;
+    private TextView tvTempo;
+    
+    private SeekBar seekSensitivity;
+    private TextView tvSensitivity;
+    
+    private SeekBar seekMinDuration;
+    private TextView tvMinDuration;
+    
+    private SeekBar seekWhiteKeyWidth;
+    private TextView tvWhiteKeyWidth;
+    
+    private SeekBar seekBlackKeyPos;
+    private TextView tvBlackKeyPos;
+    
+    private SeekBar seekKeysCount;
+    private TextView tvKeysCount;
+    
+    private CheckBox cbNotesOverlap;
+    private CheckBox cbIgnoreMinDuration;
+    private CheckBox cbUseSparks;
+    private CheckBox cbUseAlternateKeys;
+    private CheckBox cbRollcheck;
+    private CheckBox cbRollcheckPriority;
+    private CheckBox cbUsePerColorDelta;
+    private CheckBox cbSyncNotesStart;
+    
+    private Button btnSave;
+    private Button btnReset;
+    private Button btnCancel;
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_settings);
+        
+        preferences = new Preferences();
+        preferences.load(this);
+        
+        initViews();
+        loadSettings();
+        setupListeners();
+    }
+    
+    private void initViews() {
+        // Octave
+        seekOctave = findViewById(R.id.seekOctave);
+        tvOctave = findViewById(R.id.tvOctave);
+        
+        // Tempo
+        seekTempo = findViewById(R.id.seekTempo);
+        tvTempo = findViewById(R.id.tvTempo);
+        
+        // Sensitivity
+        seekSensitivity = findViewById(R.id.seekSensitivity);
+        tvSensitivity = findViewById(R.id.tvSensitivity);
+        
+        // Min Duration
+        seekMinDuration = findViewById(R.id.seekMinDuration);
+        tvMinDuration = findViewById(R.id.tvMinDuration);
+        
+        // White Key Width
+        seekWhiteKeyWidth = findViewById(R.id.seekWhiteKeyWidth);
+        tvWhiteKeyWidth = findViewById(R.id.tvWhiteKeyWidth);
+        
+        // Black Key Position
+        seekBlackKeyPos = findViewById(R.id.seekBlackKeyPos);
+        tvBlackKeyPos = findViewById(R.id.tvBlackKeyPos);
+        
+        // Keys Count
+        seekKeysCount = findViewById(R.id.seekKeysCount);
+        tvKeysCount = findViewById(R.id.tvKeysCount);
+        
+        // Checkboxes
+        cbNotesOverlap = findViewById(R.id.cbNotesOverlap);
+        cbIgnoreMinDuration = findViewById(R.id.cbIgnoreMinDuration);
+        cbUseSparks = findViewById(R.id.cbUseSparks);
+        cbUseAlternateKeys = findViewById(R.id.cbUseAlternateKeys);
+        cbRollcheck = findViewById(R.id.cbRollcheck);
+        cbRollcheckPriority = findViewById(R.id.cbRollcheckPriority);
+        cbUsePerColorDelta = findViewById(R.id.cbUsePerColorDelta);
+        cbSyncNotesStart = findViewById(R.id.cbSyncNotesStart);
+        
+        // Buttons
+        btnSave = findViewById(R.id.btnSave);
+        btnReset = findViewById(R.id.btnReset);
+        btnCancel = findViewById(R.id.btnCancel);
+        spinnerLanguage = findViewById(R.id.spinnerLanguage);
+    }
+    
+    private void loadSettings() {
+        // Octave (0-7)
+        seekOctave.setMax(7);
+        seekOctave.setProgress(preferences.getOctave());
+        tvOctave.setText( getString(R.string.octave,  preferences.getOctave()) );
+
+        // Tempo (30-240)
+        seekTempo.setMax(210);
+        seekTempo.setProgress(preferences.getTempo() - 30);
+        tvTempo.setText( getString (R.string.tempo, preferences.getTempo()));
+
+        // Sensitivity (0-130)
+        seekSensitivity.setMax(130);
+        seekSensitivity.setProgress(preferences.getSensitivity());
+        tvSensitivity.setText( getString(R.string.sensitivity, preferences.getSensitivity()));
+
+        // Min Duration (0-2.0 sec)
+        seekMinDuration.setMax(200);
+        seekMinDuration.setProgress((int)(preferences.getMinimalDuration() * 100));
+        tvMinDuration.setText( getString(R.string.min_duration, preferences.getMinimalDuration()));
+
+        // White Key Width (10-40)
+        seekWhiteKeyWidth.setMax(400);
+        seekWhiteKeyWidth.setProgress(preferences.getWhiteKeyWidth() - 10);
+        tvWhiteKeyWidth.setText( getString(R.string.white_key_width , preferences.getWhiteKeyWidth()));
+
+        // Black Key Position (0-1.0)
+        seekBlackKeyPos.setMax(100);
+        seekBlackKeyPos.setProgress((int)(preferences.getBlackKeyRelativePosition() * 100));
+        tvBlackKeyPos.setText( getString(R.string.black_key_position, preferences.getBlackKeyRelativePosition()));
+
+        // Keys Count (12-144)
+        seekKeysCount.setMax(132);
+        seekKeysCount.setProgress(preferences.getKeysPosCount() - 12);
+        tvKeysCount.setText( getString(R.string.keys_count, preferences.getKeysPosCount()) );
+        
+        // Checkboxes
+        cbNotesOverlap.setChecked(preferences.isNotesOverlap());
+        cbIgnoreMinDuration.setChecked(preferences.isIgnoreMinimalDuration());
+        cbUseSparks.setChecked(preferences.isUseSparks());
+        cbUseAlternateKeys.setChecked(preferences.isUseAlternateKeys());
+        cbRollcheck.setChecked(preferences.isRollcheck());
+        cbRollcheckPriority.setChecked(preferences.isRollcheckPriority());
+        cbUsePerColorDelta.setChecked(preferences.isUsePerColorDelta());
+        cbSyncNotesStart.setChecked(preferences.isSyncNotesStartPos());
+
+        String[] languages = {"English", "ไทย", "Русский"};
+        android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, languages);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerLanguage.setAdapter(adapter);
+
+        if ("th".equals(preferences.getLanguage())) {
+            spinnerLanguage.setSelection(1);
+        } else if ("ru".equals(preferences.getLanguage())) {
+            spinnerLanguage.setSelection(2);
+        } else {
+            spinnerLanguage.setSelection(0);
+        }
+
+
+    }
+    
+    private void setupListeners() {
+        // Octave
+        seekOctave.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                tvOctave.setText( getString(R.string.octave,  progress) );
+            }
+            
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+        
+        // Tempo
+        seekTempo.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                tvTempo.setText(getString (R.string.tempo, progress + 30));
+            }
+            
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+        
+        // Sensitivity
+        seekSensitivity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                tvSensitivity.setText( getString(R.string.sensitivity, progress));
+            }
+            
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+        
+        // Min Duration
+        seekMinDuration.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                float value = progress / 100.0f;
+                tvMinDuration.setText(getString(R.string.min_duration,value));
+            }
+            
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+        
+        // White Key Width
+        seekWhiteKeyWidth.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                tvWhiteKeyWidth.setText(getString(R.string.white_key_width , (progress + 10)));
+            }
+            
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+        
+        // Black Key Position
+        seekBlackKeyPos.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                float value = progress / 100.0f;
+                tvBlackKeyPos.setText(getString(R.string.black_key_position,value));
+            }
+            
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+        
+        // Keys Count
+        seekKeysCount.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                tvKeysCount.setText(getString(R.string.keys_count, (progress + 12)) );
+            }
+            
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+        
+        // Buttons
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveSettings();
+            }
+        });
+        
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetSettings();
+            }
+        });
+        
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+    
+    private void saveSettings() {
+        // Сохраняем все настройки
+        preferences.setOctave(seekOctave.getProgress());
+        preferences.setTempo(seekTempo.getProgress() + 30);
+        preferences.setSensitivity(seekSensitivity.getProgress());
+        preferences.setMinimalDuration(seekMinDuration.getProgress() / 100.0f);
+        preferences.setWhiteKeyWidth(seekWhiteKeyWidth.getProgress() + 10);
+        preferences.setBlackKeyRelativePosition(seekBlackKeyPos.getProgress() / 100.0f);
+        preferences.setKeysPosCount(seekKeysCount.getProgress() + 12);
+        
+        preferences.setNotesOverlap(cbNotesOverlap.isChecked());
+        preferences.setIgnoreMinimalDuration(cbIgnoreMinDuration.isChecked());
+        preferences.setUseSparks(cbUseSparks.isChecked());
+        preferences.setUseAlternateKeys(cbUseAlternateKeys.isChecked());
+        preferences.setRollcheck(cbRollcheck.isChecked());
+        preferences.setRollcheckPriority(cbRollcheckPriority.isChecked());
+        preferences.setUsePerColorDelta(cbUsePerColorDelta.isChecked());
+        preferences.setSyncNotesStartPos(cbSyncNotesStart.isChecked());
+
+        int langSelection = spinnerLanguage.getSelectedItemPosition();
+        String oldLang = preferences.getLanguage();
+        String newLang;
+        if (langSelection == 1) {
+            newLang = "th";
+        } else if (langSelection == 2) {
+            newLang = "ru";
+        } else {
+            newLang = "en";
+        }
+        preferences.setLanguage(newLang);
+        
+        // Обновляем позиции клавиш
+        KeyPositionCalculator.updateKeyPositions(preferences);
+        
+        // Сохраняем в SharedPreferences
+        preferences.save(this);
+        
+        setResult(RESULT_OK);
+        
+        if (!newLang.equals(oldLang)) {
+            android.content.Intent intent = getIntent();
+            finish();
+            startActivity(intent);
+        } else {
+            finish();
+        }
+    }
+    
+    private void resetSettings() {
+        preferences = new Preferences(); // Создаем с настройками по умолчанию
+        loadSettings();
+    }
+}
