@@ -67,4 +67,26 @@ jobs:
             --refresh-dependencies \
             --no-build-cache \
             --stacktrace
+
   
+      - name: Verify APK
+        run: |
+          echo "=== APK Output ==="
+          ls -la app/build/outputs/apk/debug/
+
+          echo "=== APK Info ==="
+          ls -lh app/build/outputs/apk/debug/*.apk
+
+      - name: Rename APK
+        run: |
+          cp \
+            app/build/outputs/apk/debug/app-debug.apk \
+            app/build/outputs/apk/debug/vid2midiApp-debug.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WebViewApp-debug-APK
+          path: app/build/outputs/apk/debug/vid2midiApp-debug.apk
+          if-no-files-found: error
+          retention-days: 90
